@@ -16,6 +16,8 @@ function LevelBatchStream(options) {
   Transform.call(this, { objectMode: true, highWaterMark: hwm  });
 
   this.db = options.db || options;
+  this.retries = options.retries || 6;
+
 
   if (!this.db) throw new Error('DB required');
 }
@@ -30,7 +32,11 @@ function LevelBatchStream(options) {
 LevelBatchStream.prototype._transform = function (data, enc, cb) {
   data = !Array.isArray(data) ? [data] : data;
 
-  this.batch(data, cb);
+  //
+  // Create an ID so that each batch has a unique identifier for retry attempts
+  //
+  var id = process.hrtime().join('-');
+  this.batch(data, id, cb);
 };
 
 /**
@@ -41,12 +47,14 @@ LevelBatchStream.prototype._transform = function (data, enc, cb) {
  *  This is a resillient batch function that does not take an error for an
  *  answer
  */
-LevelBatchStream.prototype.batch = function (data, cb) {
+LevelBatchStream.prototype.batch = function (data, id, cb) {
   var self = this;
   this.db.batch(data, function (err) {
     if (err) {
+      self.attempts[id] = self.attempts[id] || 0;
+      if (++self.attempts[id] > self.retries) return cb(err);
       self.emit('retry', data);
-      return void setImmediate(self.batch.bind(self, data, cb));
+      return void setImmediate(self.batch.bind(self, data, id, cb));
     }
     cb();
   });
