@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git@github.com:jcrugzz/level-batch-stream.git"
   },
+  "keywords": ["level", "leveldb", "batch", "stream", "writable"],
   "author": "Jarrett Cruger <jcrugzz@gmail.com>",
   "license": "MIT",
   "devDependencies": {
