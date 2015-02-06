@@ -4,15 +4,8 @@
 
 A simple `Transform` stream that executes a batch operation on a given levelDB
 instance. Perfect to use in conjunction with [`batch-stream`][BatchStream] to
-batch up your array size for you and [`concurrent-transform`][concurrent] for
+batch up your array size for you and [`concurrent-writable`][concurrent] for
 tweaking the batch execution concurrency level.
-
-Note: While this is a transform stream, it is used as a writable stream. The
-reason we did this was to be able to take advantage of
-[`concurrent-transform`][concurrent] without writing a specific version for
-writable streams at this point in time. We do not pass any data onwards to the
-next stream so we will not fill our buffer in anyway
-
 
 ```js
 
@@ -46,4 +39,4 @@ source
 
 
 [BatchStream]: https://github.com/segmentio/batch-stream
-[concurrent]: https://github.com/segmentio/concurrent-transform
+[concurrent]: https://www.npmjs.com/package/concurrent-writable
