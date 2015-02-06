@@ -1,10 +1,10 @@
 
-var Writable = require('stream').Writable;
+var Transform = require('stream').Transform;
 var util = require('util');
 
 module.exports = LevelBatchStream;
 
-util.inherits(LevelBatchStream, Writable);
+util.inherits(LevelBatchStream, Transform);
 
 /**
  * @constructor LevelBatchStream
@@ -12,8 +12,8 @@ util.inherits(LevelBatchStream, Writable);
  */
 function LevelBatchStream(options) {
   if (!(this instanceof LevelBatchStream)) { return new LevelBatchStream(options); }
-  var hwm = options.highWaterMark || 16;
-  Writable.call(this, { objectMode: true, highWaterMark: hwm  });
+  var hwm = options.highWaterMark || 0;
+  Transform.call(this, { objectMode: true, highWaterMark: hwm  });
 
   this.db = options.db || options;
 
@@ -21,13 +21,13 @@ function LevelBatchStream(options) {
 }
 
 /**
- * @function _write
+ * @function _transform
  *  @param {Object} data Array or single object read to be batched to levelDB
  *
  *  We assume we are getting an object or an array of objects of the form
  *  { type: 'put', key: 'x', value: 'y' }
  */
-LevelBatchStream.prototype._write = function (data, enc, cb) {
+LevelBatchStream.prototype._transform = function (data, enc, cb) {
   data = !Array.isArray(data) ? [data] : data;
 
   this.batch(data, cb);
