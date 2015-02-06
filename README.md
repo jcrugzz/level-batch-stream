@@ -20,7 +20,7 @@ var level = require('level-hyper');
 var through = require('through2');
 var LevelBatch = require('level-batch-stream');
 var BatchStream = require('batch-stream');
-var parallel = require('concurrent-transform');
+var parallel = require('concurrent-writable');
 
 var db = level('new.db', { valueEncoding: 'json' });
 
