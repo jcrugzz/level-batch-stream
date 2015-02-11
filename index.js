@@ -15,7 +15,7 @@ function LevelBatchStream(options) {
   var hwm = options.highWaterMark || 0;
   Writable.call(this, { objectMode: true, highWaterMark: hwm  });
 
-  this.db = options.db || options;
+  this.db = options.level || options;
   this.retries = options.retries || 6;
 
 
