@@ -15,7 +15,6 @@ test('Single batch write', function (t) {
     { type: 'put', key: 'hello', value: 'there' }
   ]);
 
-  setImmediate(function () {
     db.createReadStream()
       .on('data', function (data) {
         set[data.key] = data.value;
@@ -25,5 +24,4 @@ test('Single batch write', function (t) {
       t.end();
     });
 
-  });
 });

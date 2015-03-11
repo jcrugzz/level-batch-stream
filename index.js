@@ -17,6 +17,7 @@ function LevelBatchStream(options) {
 
   this.db = options.level || options;
   this.retries = options.retries || 6;
+  this.attempts = Object.create(null);
 
 
   if (!this.db) throw new Error('DB required');
@@ -56,6 +57,8 @@ LevelBatchStream.prototype.batch = function (data, id, cb) {
       self.emit('retry', data);
       return void setImmediate(self.batch.bind(self, data, id, cb));
     }
+
+    if (self.attempts[id]) self.attempts[id] = null;
     cb();
   });
 };
